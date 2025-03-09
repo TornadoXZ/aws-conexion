@@ -21,6 +21,20 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Obtener un usuario específico
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    if (users.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    res.json(users[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener usuario' });
+  }
+});
+
 // Crear un nuevo usuario
 router.post('/', upload.single('profilePicture'), async (req, res) => {
   try {
